@@ -1,0 +1,36 @@
+{% extends 'BaseUI/BaseHelp/BaseHelp.html' %}
+{% load staticfiles %}
+{% load static %}
+
+{% block library %}
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    <div class="content-a">
+        <table border="1px" >
+            <caption style="font-size: 32px; text-align: center; color: black">RBI-Cortek Help</caption>
+            <thead>
+                <th style="text-align: center;">Huong Dan</th>
+                <th style="text-align: center;">Hinh Anh Cu The</th>
+            </thead>
+            <tr>
+                <td>giao dien chinh</td>
+                <td><img href="#" name="home"></td>
+            </tr>
+            <tr>
+                <td>Chuc Nang Dan Chung</td>
+                <td> <img href="#"> </td>
+            </tr>
+            <tr>
+                <td>Chuc Nang Nha May</td>
+                <td><img href="#"> </td>
+            </tr>
+            <tr>
+                <td>Chuc Nang Nha Quan Ly</td>
+                <td><img href="#"> </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
