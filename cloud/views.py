@@ -2621,6 +2621,28 @@ def FullyConsequence(request, proposalID):
             return render(request, 'FacilityUI/risk_summary/fullyNormalConsequence.html', {'data': data, 'proposalID':proposalID, 'ass':rwAss})
     except:
         raise Http404
+def data_sensor_chart(request, mac_sensor):
+    try:
+        data_sensor = models.DataSensor.objects.filter(mac_sensor=mac_sensor)
+        print(mac_sensor)
+        # print('mac_sensor: ' + data_sensor[0].mac_sensor + '\n')
+        humi_chart = []
+        temp_chart = []
+        data_label = []
+        for obj in data_sensor:
+            humi_chart.append(obj.humi)
+            print(obj.humi)
+            temp_chart.append(obj.temp)
+            data_label.append(date2Str.date2str(obj.time_get))
+        # f = open("data.out", "w+")
+        # for a in humi_chart:
+        # # a = "data[\"" + str(k) + "\"] = " + str(k) + '\n'
+        #     f.write(a)
+        content = {'humi_chart' : humi_chart, 'temp_chart' : temp_chart, 'data_label' : data_label, 'macsensor': mac_sensor}
+        return render(request, 'sensor_chart.html', content)
+    except Exception as e:
+        print(e)
+        raise Http404
 def RiskChart(request, proposalID):
     try:
         rwAssessment = models.RwAssessment.objects.get(id= proposalID)

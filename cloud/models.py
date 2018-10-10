@@ -129,6 +129,16 @@ class ComponentType(models.Model):
         db_table = 'component_type'
         ordering = ('componenttypeid',)
 
+class DataSensor(models.Model):
+    data_id = models.AutoField(db_column='id', primary_key=True)
+    humi = models.FloatField(db_column='humidity')
+    temp = models.FloatField(db_column='temperature')
+    time_get = models.DateTimeField(db_column='time_get', default=datetime.datetime.now())
+    mac_sensor = models.IntegerField(db_column='mac_sensor')
+
+    class Meta:
+        managed = False
+        db_table = 'data_sensor'
 
 class DesignCode(models.Model):
     designcodeid = models.AutoField(db_column='DesignCodeID', primary_key=True)  # Field name made lowercase.

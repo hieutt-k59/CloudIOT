@@ -66,60 +66,60 @@ def on_message(client, obj, msg):
     if topic == "equipment":
         json_eq = eval(temp[2:length])
         rw_equipment = models.RwEquipment(id=rwassessment, commissiondate=models.EquipmentMaster.objects.get(equipmentid= comp.equipmentid_id).commissiondate,
-                              adminupsetmanagement=json_eq["AdminControlUpset"], containsdeadlegs=json_eq["ContainsDeadlegs"],
-                              cyclicoperation=json_eq["CylicOper"], highlydeadleginsp=json_eq["Highly"],
-                              downtimeprotectionused=json_eq["Downtime"], externalenvironment=json_eq['ExternalEnvironment'],
-                              heattraced=json_eq["HeatTraced"], interfacesoilwater=json_eq["InterfaceSoilWater"],
-                              lineronlinemonitoring=json_eq["LOM"], materialexposedtoclext=json_eq["MFTF"],
-                              minreqtemperaturepressurisation=json_eq["minTemp"],
-                              onlinemonitoring=json_eq['OnlineMonitoring'], presencesulphideso2=json_eq["PresenceofSulphides"],
-                              presencesulphideso2shutdown=json_eq["PresenceofSulphidesShutdown"],
-                              pressurisationcontrolled=json_eq["PressurisationControlled"], pwht=json_eq["PWHT"], steamoutwaterflush=json_eq["SteamedOut"],
-                              managementfactor= faci.managementfactor, thermalhistory=json_eq['ThermalHistory'],
-                              yearlowestexptemp=json_eq["EquOper"], volume=json_eq["EquipmentVolumn"])
+                            adminupsetmanagement=json_eq["AdminControlUpset"], containsdeadlegs=json_eq["ContainsDeadlegs"],
+                            cyclicoperation=json_eq["CylicOper"], highlydeadleginsp=json_eq["Highly"],
+                            downtimeprotectionused=json_eq["Downtime"], externalenvironment=json_eq['ExternalEnvironment'],
+                            heattraced=json_eq["HeatTraced"], interfacesoilwater=json_eq["InterfaceSoilWater"],
+                            lineronlinemonitoring=json_eq["LOM"], materialexposedtoclext=json_eq["MFTF"],
+                            minreqtemperaturepressurisation=json_eq["minTemp"],
+                            onlinemonitoring=json_eq['OnlineMonitoring'], presencesulphideso2=json_eq["PresenceofSulphides"],
+                            presencesulphideso2shutdown=json_eq["PresenceofSulphidesShutdown"],
+                            pressurisationcontrolled=json_eq["PressurisationControlled"], pwht=json_eq["PWHT"], steamoutwaterflush=json_eq["SteamedOut"],
+                            managementfactor= faci.managementfactor, thermalhistory=json_eq['ThermalHistory'],
+                            yearlowestexptemp=json_eq["EquOper"], volume=json_eq["EquipmentVolumn"])
         rw_equipment.save()
     if topic == "component":
         json_comp = eval(temp[2:length])
         rwcomponent = models.RwComponent(id=rwassessment, nominaldiameter=json_comp["NorminalDiameter"],
-                              nominalthickness=json_comp['NorminalThickness'], currentthickness=json_comp['CurrentThickness'],
-                              minreqthickness=json_comp['MinReqThickness'], currentcorrosionrate=json_comp['CurrentCorrosionRate'],
-                              branchdiameter=json_comp['BranchDiameter'], branchjointtype=json_comp['BranchJointType'],
-                              brinnelhardness=json_comp['MaxBrinell']
-                              , deltafatt=json_comp['DeltaFATT'], chemicalinjection=json_comp["ChemicalInjection"],
-                              highlyinjectioninsp=json_comp["HFICI"], complexityprotrusion=json_comp['complex'],
-                              correctiveaction=json_comp['CorrectiveAction'], crackspresent=json_comp["PresenceCracks"],
-                              cyclicloadingwitin15_25m=json_comp['CylicLoad'],
-                              damagefoundinspection=json_comp["DFDI"], numberpipefittings=json_comp['NumberPipeFittings'],
-                              pipecondition=json_comp['PipeCondition'],
-                              previousfailures=json_comp['PreviousFailures'], shakingamount=json_comp['ShakingAmount'],
-                              shakingdetected=json_comp["VASD"], shakingtime=json_comp['timeShakingPipe'],
-                              trampelements=json_comp["TrampElement"])
+                            nominalthickness=json_comp['NorminalThickness'], currentthickness=json_comp['CurrentThickness'],
+                            minreqthickness=json_comp['MinReqThickness'], currentcorrosionrate=json_comp['CurrentCorrosionRate'],
+                            branchdiameter=json_comp['BranchDiameter'], branchjointtype=json_comp['BranchJointType'],
+                            brinnelhardness=json_comp['MaxBrinell']
+                            , deltafatt=json_comp['DeltaFATT'], chemicalinjection=json_comp["ChemicalInjection"],
+                            highlyinjectioninsp=json_comp["HFICI"], complexityprotrusion=json_comp['complex'],
+                            correctiveaction=json_comp['CorrectiveAction'], crackspresent=json_comp["PresenceCracks"],
+                            cyclicloadingwitin15_25m=json_comp['CylicLoad'],
+                            damagefoundinspection=json_comp["DFDI"], numberpipefittings=json_comp['NumberPipeFittings'],
+                            pipecondition=json_comp['PipeCondition'],
+                            previousfailures=json_comp['PreviousFailures'], shakingamount=json_comp['ShakingAmount'],
+                            shakingdetected=json_comp["VASD"], shakingtime=json_comp['timeShakingPipe'],
+                            trampelements=json_comp["TrampElement"])
         rwcomponent.save()
     if topic == "rw_stream":
         json_stream = eval(temp[2:length])
         rwstream = models.RwStream(id=rwassessment, aminesolution=json_stream['AminSolution'], aqueousoperation=json_stream["AqueOp"],
-                                aqueousshutdown=json_stream["AqueShutdown"], toxicconstituent=json_stream["ToxicConstituents"],
-                                caustic=json_stream["EnvCaustic"],
-                                chloride=json_stream['ChlorideIon'], co3concentration=json_stream['CO3'], cyanide=json_stream["PresenceCyanides"],
-                                exposedtogasamine=json_stream["exposureAcid"], exposedtosulphur=json_stream["ExposedSulfur"],
-                                exposuretoamine=json_stream['ExposureAmine'],
-                                h2s=json_stream["EnvCH2S"], h2sinwater=json_stream['"H2SInWater"'], hydrogen=json_stream["ProcessHydrogen"],
-                                hydrofluoric=json_stream["HydrogenFluoric"], materialexposedtoclint=json_stream["materialExposedFluid"],
-                                maxoperatingpressure=json_stream['maxOP'],
-                                maxoperatingtemperature=float(json_stream['maxOT']), minoperatingpressure=float(json_stream['minOP']),
-                                minoperatingtemperature=json_stream['minOT'], criticalexposuretemperature=json_stream['criticalTemp'],
-                                naohconcentration=json_stream['NaOHConcentration'],
-                                releasefluidpercenttoxic=float(json_stream['ReleasePercentToxic']),
-                                waterph=float(json_stream['PHWater']), h2spartialpressure=float(json_stream['OpHydroPressure']))
+                            aqueousshutdown=json_stream["AqueShutdown"], toxicconstituent=json_stream["ToxicConstituents"],
+                            caustic=json_stream["EnvCaustic"],
+                            chloride=json_stream['ChlorideIon'], co3concentration=json_stream['CO3'], cyanide=json_stream["PresenceCyanides"],
+                            exposedtogasamine=json_stream["exposureAcid"], exposedtosulphur=json_stream["ExposedSulfur"],
+                            exposuretoamine=json_stream['ExposureAmine'],
+                            h2s=json_stream["EnvCH2S"], h2sinwater=json_stream['"H2SInWater"'], hydrogen=json_stream["ProcessHydrogen"],
+                            hydrofluoric=json_stream["HydrogenFluoric"], materialexposedtoclint=json_stream["materialExposedFluid"],
+                            maxoperatingpressure=json_stream['maxOP'],
+                            maxoperatingtemperature=float(json_stream['maxOT']), minoperatingpressure=float(json_stream['minOP']),
+                            minoperatingtemperature=json_stream['minOT'], criticalexposuretemperature=json_stream['criticalTemp'],
+                            naohconcentration=json_stream['NaOHConcentration'],
+                            releasefluidpercenttoxic=float(json_stream['ReleasePercentToxic']),
+                            waterph=float(json_stream['PHWater']), h2spartialpressure=float(json_stream['OpHydroPressure']))
         rwstream.save()
     if topic == "rw_excor":
         json_excor = eval(temp[2:length])
         rwexcor = models.RwExtcorTemperature(id=rwassessment, minus12tominus8=json_excor['OP1'], minus8toplus6=json_excor['OP2'],
-                              plus6toplus32=json_excor['OP3'], plus32toplus71=json_excor['OP4'],
-                              plus71toplus107=json_excor['OP5'],
-                              plus107toplus121=json_excor['OP6'], plus121toplus135=json_excor['OP7'],
-                              plus135toplus162=json_excor['OP8'], plus162toplus176=json_excor['OP9'],
-                              morethanplus176=json_excor['OP10'])
+                            plus6toplus32=json_excor['OP3'], plus32toplus71=json_excor['OP4'],
+                            plus71toplus107=json_excor['OP5'],
+                            plus107toplus121=json_excor['OP6'], plus121toplus135=json_excor['OP7'],
+                            plus135toplus162=json_excor['OP8'], plus162toplus176=json_excor['OP9'],
+                            morethanplus176=json_excor['OP10'])
         rwexcor.save()
     if topic == "rw_coat":
         json_coat = eval(temp[2:length])

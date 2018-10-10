@@ -1,0 +1,77 @@
+{% extends 'BaseUI/BaseFacility/baseBusiness.html' %}
+{% load staticfiles %}
+{% load static %}
+
+{% block title %}Data Sensor Chart{% endblock %}
+
+<!----------------BLOCK MENU--------------->
+<!-- {% block pof %}{% url 'damgeFactor' proposalID %}{% endblock %}
+{% block ca%}{% url 'fullyConsequence' proposalID %}{% endblock %}
+{% block matrix %}{% url 'riskMatrix' proposalID %}{% endblock %}
+{% block chart %}{% url 'riskChart' proposalID %}{% endblock %}
+{% block backProposal %}{% url 'proposalDisplay' componentID %}{% endblock %} -->
+<!---------------END BLOCK--------------->
+
+{% block data-content %}
+    <form method="post">
+    {% csrf_token %}
+        <div style="text-align: center">
+            <canvas id="myChart" width="700" height="300" ></canvas>
+            <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+
+            <script>
+                var ctx = document.getElementById("myChart");
+                var myLineChart = new Chart(ctx,{
+                    type: 'line',
+                    data: {
+                        labels: [{% for label in data_label %}"{{ label }}",{% endfor %}"{{ endLabel }}"],
+                        datasets:[{
+                            label: 'Humidity',
+                            backgroundColor: "#0000BB",
+                            borderColor: "#0000BB",
+                            data: [{% for data in humi_chart %}{{ data }},{% endfor %}],
+                            fill: false,
+                            lineTension:0.2,
+                        },{
+                            label: 'Temperature',
+                            backgroundColor: "#CC0000",
+                            borderColor: "#CC0000",
+                            data: [{% for data in temp_chart %}{{ data }},{% endfor %}],
+                            fill: false,}]
+                    },
+                    options: {
+                        responsive: true,
+                        title: {
+                            display: true,
+                            text: 'Chart Data of Sensor: {{ mac_sensor }}'
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        hover: {
+                            mode: 'nearest',
+                            intersect: true,
+                        },
+                        scales: {
+                            xAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Times'
+                                }
+                            }],
+                            yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: ''
+                                }
+                            }]
+                        }
+                    },
+                })
+            </script>
+        </div>
+    </form>
+{% endblock %}

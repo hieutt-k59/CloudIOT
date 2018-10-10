@@ -118,7 +118,7 @@ def on_message(client, userdata, msg):
     print("Finished!")
     # client.disconnect()
     
-CLOUD_URL = 'localhost'
+CLOUD_URL = '192.168.0.119'
 TOPIC = "+/+"
 PORT = 1883
 client = mqtt.Client()

@@ -2,18 +2,6 @@
 {% load staticfiles %}
 {% load static %}
 
-{% block library %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
-    <link rel='stylesheet' href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
-    <meta http-equiv="refresh" content="10">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-{% endblock %}
-
 <!----------------BLOCK MENU--------------->
 {% block pof %}{% url 'damgeFactor' proposalID %}{% endblock %}
 {% block ca%}{% url 'fullyConsequence' proposalID %}{% endblock %}
@@ -41,13 +29,13 @@
                             borderColor: "#0000BB",
                             data: [{% for data in data %}{{ data }},{% endfor %}],
                             fill: false,
-                            lineTension:0.2
+                            lineTension:0.2,
                         },{
                             label: 'Risk Target',
                             backgroundColor: "#CC0000",
                             borderColor: "#CC0000",
                             data: [{% for data in target %}{{ data }},{% endfor %}],
-                            fill: false}]
+                            fill: false,}]
                     },
                     options: {
                         responsive: true,
@@ -57,11 +45,11 @@
                         },
                         tooltips: {
                             mode: 'index',
-                            intersect: false
+                            intersect: false,
                         },
                         hover: {
                             mode: 'nearest',
-                            intersect: true
+                            intersect: true,
                         },
                         scales: {
                             xAxes: [{
@@ -79,7 +67,7 @@
                                 }
                             }]
                         }
-                    }
+                    },
                 })
             </script>
         </div>
