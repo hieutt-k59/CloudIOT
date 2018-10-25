@@ -11,8 +11,9 @@ from datetime import datetime
 from cloud.process.RBI import fastCalulate as ReCalculate
 
 # This is the Subscriber
-
+TOPIC = "+/+"
 def on_connect(client, userdata, flags, rc):
+    client.subscribe(TOPIC, 0)
     print("Connected with result code "+str(rc))
 def on_subcribe(client, obj, mid, granted_qos):
     print("Subscribed: " + str(mid) + " " + str(granted_qos))
@@ -117,17 +118,12 @@ def on_message(client, userdata, msg):
     ReCalculate.ReCalculate(rw_assessment.id)
     print("Finished!")
     # client.disconnect()
-    
-CLOUD_URL = '192.168.0.119'
-TOPIC = "+/+"
+
+CLOUD_URL = '192.168.1.45'
+
 PORT = 1883
 client = mqtt.Client()
 client.connect(CLOUD_URL,PORT)
 
 client.on_connect = on_connect
 client.on_message = on_message
-client.subscribe(TOPIC, 0)
-rc = 0
-while rc == 0:
-    rc = client.loop()
-print('rc: ' + str(rc))

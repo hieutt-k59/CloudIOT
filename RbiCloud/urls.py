@@ -88,6 +88,7 @@ urlpatterns = [
     path('proposalMana/<int:proposalID>/risk-matrix/', views.RiskMatrixMana, name='riskMatrixMana'),
     path('proposalMana/<int:proposalID>/fully-consequence/',views.FullyConsequenceMana, name='fullyConsequenceMana'),
     path('data_sensor/<int:mac_sensor>/', views.data_sensor_chart, name='sensor_chart'),
+    path('pub/', views.mosquitto_mqtt_pub, name='mosPub'),
 ]
 
 urlpatterns += static(set_.STATIC_URL, document_root=set_.STATIC_ROOT)

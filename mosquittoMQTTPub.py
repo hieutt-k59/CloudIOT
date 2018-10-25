@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import json
+import argparse
 # from cloud.process.RBI import DM_CAL
 
 # This is the Publisher
@@ -153,36 +154,51 @@ def set_data(Op7, BrittleFacture, MaterialHTHA, H2SInWater, DesignPressure, Rele
     data["minOT"] = minOT
     data["SulfurContent"] = SulfurContent
     return data
-client = mqtt.Client()
-client.connect("localhost",1883,60)
-data = set_data(Chromium=False, materialExposedFluid=False, EnvironmentCost=0, Op3=0, RiskAnalystPeriod=36, 
-    PressurisationControlled=False, MaterialHTHA=True, NorminalThickness=19.05, HTHAMaterialGrade="1Cr-0.5Mo", 
-    CorrectiveAction="None", EquOper=False, CriticalTemp=80, 
-    PipeCondition="Broken gussets or gussets welded directly to pipe", ThermalHistory="Solution Annealed", 
-    EquipmentVolumn=100, Op4=0, tempRef=21, AminSolution="Diglycolamine DGA", ExternalCoatingDate="2018-09-26", 
-    OpHydrogenPressure=10000, EnvCaustic=False, Op9=0, Op6=0, ExposureAmine="Low Lean Amine", MassInventory=12400, 
-    DeltaFATT=0.5, minOT=20, CO3=0, PresenceCyanides=False, Op7=100, APIFluid="C1-C2", NumberPipeFittings="More than 10", 
-    InternalCladding=True, DFDI=False, ExternalCoatingQuality="Please select coat quality..", HydrogenFluoric=False, 
-    ToxicConstituents=True, H2SInWater=1000, NickelAlloy=False, Downtime=False, 
-    OnlineMonitoring="Sour water low velocity corrosion - Electrical resistance probes", InsulationType='C', 
-    MinReqThickness=16.68, SusceptibleTemper=False, AusteniticSteel=False, PreviousFailures="Greater than one", 
-    allowStress=240, BranchDiameter="Any branch less than or equal to 2\" Nominal OD", MaxBrinell="Below 200", 
-    CylicOper=True, PHWater=5, ExposedSulfur=False, AdminControlUpset=True, CladdingCorrosionRate=0.29, 
-    ExternalInsulationType="Calcium Silicate", Op10=0, Op2=0, ChlorideIon=1000, PersonDensity=0.005, 
-    SulphurContent="High > 0.01%", HeatTraced=False, complex="Above Average", InsulationCholride=True, 
-    SteamedOut=False, EquipmentCost=2000, CurrentThickness=19.05, LOM=False, Op8=0, InternalCoating=True, 
-    AqueShutdown=False, InjureCost=5000000, MFTF=False, MassComponent=24000, InternalLinerType="Acid Brick", 
-    ReleasePercentToxic=1, Op1=0, BranchJointType=None, supportMaterial=True, AqueOp=False, BrittleFacture=1, 
-    PWHT=False, ReleaseDuration="", ExternalEnvironment="Arid/dry", ContainsDeadlegs=False, Highly=True, maxOP=1000, 
-    timeShakingPipe="13 to 52 weeks", ChemicalInjection=False, MitigationSystem="Fire water deluge system and monitors", 
-    DetectionType='C', ShakingAmount="Moderate", heatTreatment="Normalised Temper", SigmaPhase=1, 
-    InternalLinerCondition="Poor", MinDesignTemp=17, System="Vapor", minOP=200, NaOHConcentration=12, hydrogen=False, 
-    CorrosionAllowance=3.17, PresenceCracks=False, VASD=True, PresenceofSulphides=False, MaterialPTA=True, PTAMaterialCode="321 Stainless Stee", maxOT=100, 
-    CostFactor=1.2, exposureAcid=False, HFICI=False, InternalLining=True, Op5=0, ExternalCoating=False, 
-    CylicLoad="Valve with high pressure drop", ProductionCost=50000, PresenceofSulphidesShutdown=False, EnvCH2S=False, 
-    Material="plastic", MaxDesignTemp=1000, NorminalDiameter=97.62, ExternalInsulation=1, minTemp=45, 
-    CurrentCorrosionRate=0.29, InsulationCondition="Above average", CarbonAlloySteel=False, InterfaceSoilWater=False, 
-    ToxicPercent=0, TrampElements=False, DesignPressure=12000, SulfurContent=0)
-send_data = json.dumps(data)
-client.publish("7/propsaltest", send_data);
-client.disconnect();
+def parse_command_line_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--server_ip', default='localhost', help='Server IP address')
+    parser.add_argument('--port', default=1883, help='Port listen')
+    return parser.parse_args()
+def main():
+    args = parse_command_line_args()
+    CLOUD_URL = '192.168.1.45'
+    PORT = 1883
+    client = mqtt.Client()
+    client.connect(CLOUD_URL, PORT, 60)
+    data = set_data(Chromium=False, materialExposedFluid=False, EnvironmentCost=0, Op3=0, RiskAnalystPeriod=36, 
+        PressurisationControlled=False, MaterialHTHA=True, NorminalThickness=19.05, HTHAMaterialGrade="1Cr-0.5Mo", 
+        CorrectiveAction="None", EquOper=False, CriticalTemp=80, 
+        PipeCondition="Broken gussets or gussets welded directly to pipe", ThermalHistory="Solution Annealed", 
+        EquipmentVolumn=100, Op4=0, tempRef=21, AminSolution="Diglycolamine DGA", ExternalCoatingDate="2018-09-26", 
+        OpHydrogenPressure=10000, EnvCaustic=False, Op9=0, Op6=0, ExposureAmine="Low Lean Amine", MassInventory=12400, 
+        DeltaFATT=0.5, minOT=20, CO3=0, PresenceCyanides=False, Op7=100, APIFluid="C1-C2", NumberPipeFittings="More than 10", 
+        InternalCladding=True, DFDI=False, ExternalCoatingQuality="Please select coat quality..", HydrogenFluoric=False, 
+        ToxicConstituents=True, H2SInWater=1000, NickelAlloy=False, Downtime=False, 
+        OnlineMonitoring="Sour water low velocity corrosion - Electrical resistance probes", InsulationType='C', 
+        MinReqThickness=16.68, SusceptibleTemper=False, AusteniticSteel=False, PreviousFailures="Greater than one", 
+        allowStress=240, BranchDiameter="Any branch less than or equal to 2\" Nominal OD", MaxBrinell="Below 200", 
+        CylicOper=True, PHWater=5, ExposedSulfur=False, AdminControlUpset=True, CladdingCorrosionRate=0.29, 
+        ExternalInsulationType="Calcium Silicate", Op10=0, Op2=0, ChlorideIon=1000, PersonDensity=0.005, 
+        SulphurContent="High > 0.01%", HeatTraced=False, complex="Above Average", InsulationCholride=True, 
+        SteamedOut=False, EquipmentCost=2000, CurrentThickness=19.05, LOM=False, Op8=0, InternalCoating=True, 
+        AqueShutdown=False, InjureCost=5000000, MFTF=False, MassComponent=24000, InternalLinerType="Acid Brick", 
+        ReleasePercentToxic=1, Op1=0, BranchJointType=None, supportMaterial=True, AqueOp=False, BrittleFacture=1, 
+        PWHT=False, ReleaseDuration="", ExternalEnvironment="Arid/dry", ContainsDeadlegs=False, Highly=True, maxOP=1000, 
+        timeShakingPipe="13 to 52 weeks", ChemicalInjection=False, MitigationSystem="Fire water deluge system and monitors", 
+        DetectionType='C', ShakingAmount="Moderate", heatTreatment="Normalised Temper", SigmaPhase=1, 
+        InternalLinerCondition="Poor", MinDesignTemp=17, System="Vapor", minOP=200, NaOHConcentration=12, hydrogen=False, 
+        CorrosionAllowance=3.17, PresenceCracks=False, VASD=True, PresenceofSulphides=False, MaterialPTA=True, PTAMaterialCode="321 Stainless Stee", maxOT=100, 
+        CostFactor=1.2, exposureAcid=False, HFICI=False, InternalLining=True, Op5=0, ExternalCoating=False, 
+        CylicLoad="Valve with high pressure drop", ProductionCost=50000, PresenceofSulphidesShutdown=False, EnvCH2S=False, 
+        Material="plastic", MaxDesignTemp=1000, NorminalDiameter=97.62, ExternalInsulation=1, minTemp=45, 
+        CurrentCorrosionRate=0.29, InsulationCondition="Above average", CarbonAlloySteel=False, InterfaceSoilWater=False, 
+        ToxicPercent=0, TrampElements=False, DesignPressure=12000, SulfurContent=0)
+    send_data = json.dumps(data)
+    client.publish("7/propsaltest", send_data);
+    client.disconnect();
+
+
+if __name__ == "__main__":
+    main()
+
+
