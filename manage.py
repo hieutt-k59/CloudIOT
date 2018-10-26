@@ -15,25 +15,25 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-# def mosquitto_mqtt_sub():
-#     CLOUD_URL = '192.168.1.45'
-#     TOPIC = "+/+"
-#     PORT = 1883
-#     client = mqtt.Client()
-#     client.connect(CLOUD_URL,PORT)
+def mosquitto_mqtt_sub():
+    CLOUD_URL = '192.168.0.114'
+    TOPIC = "+/+"
+    PORT = 1883
+    client = mqtt.Client()
+    client.connect(CLOUD_URL,PORT)
 
-#     client.on_connect = mosquittoMQTTSub.on_connect
-#     client.on_message = mosquittoMQTTSub.on_message
-#     client.subscribe(TOPIC, 0)
-#     rc = 0
-#     while rc == 0:
-#         rc = client.loop()
-#     print('rc: ' + str(rc))
+    client.on_connect = mosquittoMQTTSub.on_connect
+    client.on_message = mosquittoMQTTSub.on_message
+    client.subscribe(TOPIC, 0)
+    rc = 0
+    while rc == 0:
+        rc = client.loop()
+    print('rc: ' + str(rc))
 if __name__ == "__main__":
-    # thread1 = threading.Thread(target=main)
-    # thread2 = threading.Thread(target=mosquitto_mqtt_sub)
-    # thread1.start()
-    # thread2.start()
-    # thread1.join()
-    # thread2.join()
-    main()
+    thread1 = threading.Thread(target=mosquitto_mqtt_sub)
+    thread2 = threading.Thread(target=main)
+    thread1.start()
+    thread2.start()
+    thread1.join()
+    thread2.join()
+    # main()

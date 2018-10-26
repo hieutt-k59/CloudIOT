@@ -15,8 +15,8 @@ TOPIC = "+/+"
 def on_connect(client, userdata, flags, rc):
     client.subscribe(TOPIC, 0)
     print("Connected with result code "+str(rc))
-def on_subcribe(client, obj, mid, granted_qos):
-    print("Subscribed: " + str(mid) + " " + str(granted_qos))
+# def on_subcribe(client, obj, mid, granted_qos):
+#     print("Subscribed: " + str(mid) + " " + str(granted_qos))
 def on_log(client, obj, level, string):
     print(string)
 def on_message(client, userdata, msg):
@@ -119,7 +119,7 @@ def on_message(client, userdata, msg):
     print("Finished!")
     # client.disconnect()
 
-CLOUD_URL = '192.168.1.45'
+CLOUD_URL = '192.168.0.114'
 
 PORT = 1883
 client = mqtt.Client()

@@ -161,8 +161,8 @@ def parse_command_line_args():
     return parser.parse_args()
 def main():
     args = parse_command_line_args()
-    CLOUD_URL = '192.168.1.45'
-    PORT = 1883
+    CLOUD_URL = args.server_ip
+    PORT = int(args.port)
     client = mqtt.Client()
     client.connect(CLOUD_URL, PORT, 60)
     data = set_data(Chromium=False, materialExposedFluid=False, EnvironmentCost=0, Op3=0, RiskAnalystPeriod=36, 

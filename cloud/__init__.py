@@ -1,5 +1,5 @@
 import pymysql
-import mqtt
+# import mqtt
 
 pymysql.install_as_MySQLdb()
-mqtt.client.loop_start()
+# mqtt.client.loop_start()

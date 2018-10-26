@@ -4001,7 +4001,7 @@ def Inputdata(request, proposalID):
 
 
 def mosquitto_mqtt_pub(request):
-    CLOUD_URL = '192.168.1.45'
+    CLOUD_URL = '192.168.0.114'
     PORT = 1883
     client = mqtt.Client()
     client.connect(CLOUD_URL, PORT, 60)
