@@ -39,6 +39,18 @@ import paho.mqtt.client as mqtt
 import json
 import mosquittoMQTTPub
 import mosquittoMQTTSub
+import codecs
+import configparser
+from urllib.parse import urlparse
+
+########### Config Parameter #############
+# Get from config.ini
+CONFIG = configparser.ConfigParser()
+CONFIG.read('./cloud/config.ini')
+CONFIG_MQTT = CONFIG['Cloudmqtt']
+TOPIC = CONFIG_MQTT['TOPIC']
+CLOUD_URL = CONFIG_MQTT['CLOUD_URL']
+PORT = CONFIG_MQTT['PORT']
 
 # Create your views here.
 
@@ -4001,8 +4013,6 @@ def Inputdata(request, proposalID):
 
 
 def mosquitto_mqtt_pub(request):
-    CLOUD_URL = '192.168.0.114'
-    PORT = 1883
     client = mqtt.Client()
     client.connect(CLOUD_URL, PORT, 60)
     data = mosquittoMQTTPub.set_data(Chromium=False, materialExposedFluid=False, EnvironmentCost=0, Op3=0, RiskAnalystPeriod=36, 
@@ -4036,3 +4046,38 @@ def mosquitto_mqtt_pub(request):
     send_data = json.dumps(data)
     client.publish("7/propsaltest", send_data);
     client.disconnect();
+
+def getHumi(request, sensorId):
+    
+    if(request.method == "GET"):
+        humi = request.GET.get('humi')
+        temp = request.GET.get('temp')
+        date = request.GET.get('time')
+        img = request.GET.get('img')
+        if humi and temp:
+            t = models.Data(temp=temp[:4], humi=humi[:4], sensor=sensor, dateGet=date)
+            t.save()
+        if img and img[:4]=="FFD8" and img[-4:]=="FFD9":
+            img=codecs.encode(codecs.decode(img, 'hex'), 'base64').decode()
+            data = models.Image(img=img,dateGet=request.GET.get('time'),sensor=request.GET.get('sensor'))
+            data.save()
+    d1 = models.Data.objects.filter(sensor=36)
+    d2 = models.Data.objects.filter(sensor=6)
+    d3 = models.Data.objects.filter(sensor=32)
+    DATA = models.Image.objects.all()
+    return render(request, 'home.html', 
+        {
+            'data1': d1[0:20], 
+            'data2': d2[0:20], 
+            'data3': d3[0:20],
+            'data':DATA[0:8]
+        })
+
+def get_json_file_tem(request):
+    f = open('./json/temperature.json', mode='r')
+    data = json.load(f)
+    json_data = json.dumps(data)
+    # print(data["label"])
+    f.close()
+
+    return render(request, 'chart/data_chart.html', {'json_data':json_data})

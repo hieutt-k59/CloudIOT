@@ -1,0 +1,54 @@
+{% extends 'BaseUI/BaseFacility/baseBusiness.html' %}
+{% load staticfiles %}
+{% load static %}
+
+{% block title %}Data Sensor Chart{% endblock %}
+
+{% block data-content %}
+
+<head>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script language="javascript" type="text/javascript" src="https://people.iola.dk/olau/flot/jquery.flot.js"></script>
+    <script>
+   $(function() {
+      var data = JSON.parse('{{ json_data|safes }}');
+      console.log(data)
+      autoComplete = [];
+          for (var i = 0, len = data.length; i < len; i++) {
+              autoComplete.push(data[i].iata + ", " + data[i].name);
+          }
+          console.log(data);
+          $( "#id_from_airport" ).autocomplete({
+              source: autoComplete,
+              minLength: 3
+          });
+          $( "#id_to_airport" ).autocomplete({
+              source: autoComplete,
+              minLength: 3
+          });
+   });
+  </script>
+  </head>
+  <body>
+      <div id="placeholder" style="width:600px;height: 300px;"></div>
+      <input class="dataUpdate" type="button" value="Poll for data">
+
+  </body>
+  <script type="text/javascript">
+  $(function(){
+      var option = {
+          lines: {show: true},
+          points: {show: true},
+          xaxis: {tickDecimals: 0, tickSize: 1}
+      };
+      var data = [];    
+      var placeholder = $("#placeholder");
+
+      $.plot(placeholder, data, options);
+      var alreadyFetched = {};
+  });
+  </script>
+
+{% endblock %}

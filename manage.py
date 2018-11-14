@@ -16,7 +16,7 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 def mosquitto_mqtt_sub():
-    CLOUD_URL = '192.168.0.114'
+    CLOUD_URL = 'localhost'
     TOPIC = "+/+"
     PORT = 1883
     client = mqtt.Client()
