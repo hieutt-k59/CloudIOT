@@ -14,17 +14,27 @@ from cloud.process.RBI import fastCalulate as ReCalculate
 TOPIC = "+/+"
 def on_connect(client, userdata, flags, rc):
     client.subscribe(TOPIC, 0)
-    print("Connected with result code "+str(rc))
+    print("Connected MosquittoMQTT with result code " + str(rc))
 # def on_subcribe(client, obj, mid, granted_qos):
 #     print("Subscribed: " + str(mid) + " " + str(granted_qos))
 def on_log(client, obj, level, string):
     print(string)
 def on_message(client, userdata, msg):
-    split_arr = msg.topic.split('/')
-    comp_id = split_arr[0]
-    assess = split_arr[1]
+    split_arr = (str(msg.topic)).split('/')
     payload = msg.payload.decode()
     data = json.loads(payload)
+    print(split_arr[0])
+    #topic "comp_id/assessment_name" or "sensor/sensor_id"
+    # if split_arr[0] == "sensor":
+    #     sensor_id = split_arr[1]
+    #     time_get = datetime(year=int(data[0]), month=int(data[1]), day=int(data[2]), hour=int(data[3]), minute=int(data[4]))
+    #     humi = float(data[5])
+    #     tem = float(data[6])
+    #     s = models.DataSensor(mac_sensor=sensor_id, humi=humi, temp=tem, time_get=time_get)
+    #     s.save()
+    # else :
+    comp_id = split_arr[0]
+    assess = split_arr[1]
     comp = models.ComponentMaster.objects.get(componentid= int(comp_id))
     facility_id = models.EquipmentMaster.objects.get(equipmentid=comp.equipmentid_id).facilityid_id
     target = models.FacilityRiskTarget.objects.get(facilityid=facility_id)
@@ -117,6 +127,7 @@ def on_message(client, userdata, msg):
     print("Calculating...")
     ReCalculate.ReCalculate(rw_assessment.id)
     print("Finished!")
+    
     # client.disconnect()
 
 CLOUD_URL = 'localhost'

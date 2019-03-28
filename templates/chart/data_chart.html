@@ -1,54 +1,77 @@
-{% extends 'BaseUI/BaseFacility/baseBusiness.html' %}
+{% extends 'BaseUI/BaseFacility/baseSensor.html' %}
 {% load staticfiles %}
 {% load static %}
 
 {% block title %}Data Sensor Chart{% endblock %}
 
 {% block data-content %}
-
-<head>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script language="javascript" type="text/javascript" src="https://people.iola.dk/olau/flot/jquery.flot.js"></script>
+<div style="text-align: center">
+    <!-- <canvas id="temChart" width="700" height="300"></canvas> -->
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+    <div style="width: 25%;float:left">
+        <center><label>{{ dataEnc.dateGet }}</label></center>
+    </div>
+    <!-- <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script> -->
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
-   $(function() {
-      var data = JSON.parse('{{ json_data|safes }}');
-      console.log(data)
-      autoComplete = [];
-          for (var i = 0, len = data.length; i < len; i++) {
-              autoComplete.push(data[i].iata + ", " + data[i].name);
-          }
-          console.log(data);
-          $( "#id_from_airport" ).autocomplete({
-              source: autoComplete,
-              minLength: 3
-          });
-          $( "#id_to_airport" ).autocomplete({
-              source: autoComplete,
-              minLength: 3
-          });
-   });
-  </script>
-  </head>
-  <body>
-      <div id="placeholder" style="width:600px;height: 300px;"></div>
-      <input class="dataUpdate" type="button" value="Poll for data">
-
-  </body>
-  <script type="text/javascript">
-  $(function(){
-      var option = {
-          lines: {show: true},
-          points: {show: true},
-          xaxis: {tickDecimals: 0, tickSize: 1}
-      };
-      var data = [];    
-      var placeholder = $("#placeholder");
-
-      $.plot(placeholder, data, options);
-      var alreadyFetched = {};
-  });
-  </script>
-
+        // var ctx = document.getElementById("temChart");
+        // var dataPoints = [];
+        // var json = $.getJSON("../../json/temperature.json");
+        // console.log(json);
+        // var json = JSON.parse(data);
+        // alert(json[0].label + " " + json[0].time + "h: " + json[0].tem);
+        // alert(json[1].label + " " + json[1].time + "h: " + json[1].tem);
+    </script>
+    <script>
+    window.onload = function(){
+        var dataPoints = [];
+        var loc = 0;
+        var id = {{sensorID}};
+        var chart;
+        // console.log(id)
+        var url = "http://192.168.0.114:8000/json/temperature/" + "?&sensorID=" + id + "&loc=" + loc;
+        console.log(url)
+        $.getJSON(url, function(data){
+            $.each(data, function(key,value){
+                // console.log(value)
+                dataPoints.push({
+                    x: new Date(value[0], value[1], value[2], value[3], value[4]), 
+                    y: parseFloat(value[5])
+                });
+                loc++;
+                // console.log(dataPoints)
+            });
+            chart = new CanvasJS.Chart("chartContainer", {
+                title:{
+                    text: "Data of sensor " + id
+                },
+                data: [{
+                    type: "line",
+                    color: "red",
+                    dataPoints: dataPoints,
+                }]
+            });
+            chart.render();
+            updateChart();
+        });
+        function updateChart(){
+            url = "http://192.168.0.114:8000/json/temperature/" + "?&sensorID=" + id + "&loc=" + loc;
+            console.log(url)
+            $.getJSON(url, function(data){
+                $.each(data, function(key, value){
+                    dataPoints.push({
+                        x: new Date(value[0], value[1], value[2], value[3], value[4]),
+                        y: parseFloat(value[5])
+                    });
+                    loc++;
+                });
+                chart.render();
+                setTimeout(function(){updateChart();}, 5000);
+            });
+        }
+    }
+    </script>
+</div>
 {% endblock %}

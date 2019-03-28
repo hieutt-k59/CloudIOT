@@ -4,6 +4,7 @@ import sys
 import threading
 import mosquittoMQTTSub
 import paho.mqtt.client as mqtt
+import mqtt as mqttSub
 def main():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "RbiCloud.settings")
     try:
@@ -22,8 +23,8 @@ def mosquitto_mqtt_sub():
     client = mqtt.Client()
     client.connect(CLOUD_URL,PORT)
 
-    client.on_connect = mosquittoMQTTSub.on_connect
-    client.on_message = mosquittoMQTTSub.on_message
+    client.on_connect = mqttSub.on_connect
+    client.on_message = mqttSub.on_message
     client.subscribe(TOPIC, 0)
     rc = 0
     while rc == 0:

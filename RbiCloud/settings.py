@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'RbiCloud.wsgi.application'
 DATABASES = {
      'default': {
          'ENGINE': 'django.db.backends.mysql',
-         'NAME': 'rbi',
+         'NAME': 'rbi-cloud',
          'USER': 'root',
          'PASSWORD': '1969626298',
          'HOST': 'localhost',

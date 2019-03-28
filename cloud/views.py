@@ -42,6 +42,7 @@ import mosquittoMQTTSub
 import codecs
 import configparser
 from urllib.parse import urlparse
+import numpy as np
 
 ########### Config Parameter #############
 # Get from config.ini
@@ -313,12 +314,18 @@ def ListEquipment(request, facilityID):
         data = models.EquipmentMaster.objects.filter(facilityid= facilityID)
         pagiEquip = Paginator(data,25)
         pageEquip = request.GET.get('page',1)
+        # data1 = models.Devices.objects.filter(facilityid= facilityID)
+        # pagiGw = Paginator(data1,25)
+        # pageGw = request.GET.get('page',1)
         try:
             obj = pagiEquip.page(pageEquip)
+            # obj1 = pagiGw.page(pageGw)
         except PageNotAnInteger:
             obj = pagiEquip.page(1)
+            # obj1 = pagiGw.page(1)
         except EmptyPage:
             obj = pageEquip.page(pagiEquip.num_pages)
+            # obj1 = pageGw.page(pagiGw.num_pages)   
         if '_edit' in request.POST:
             for a in data:
                 if request.POST.get('%d' %a.equipmentid):
@@ -2639,28 +2646,8 @@ def FullyConsequence(request, proposalID):
             return render(request, 'FacilityUI/risk_summary/fullyNormalConsequence.html', {'data': data, 'proposalID':proposalID, 'ass':rwAss})
     except:
         raise Http404
-def data_sensor_chart(request, mac_sensor):
-    try:
-        data_sensor = models.DataSensor.objects.filter(mac_sensor=mac_sensor)
-        print(mac_sensor)
-        # print('mac_sensor: ' + data_sensor[0].mac_sensor + '\n')
-        humi_chart = []
-        temp_chart = []
-        data_label = []
-        for obj in data_sensor:
-            humi_chart.append(obj.humi)
-            print(obj.humi)
-            temp_chart.append(obj.temp)
-            data_label.append(date2Str.date2str(obj.time_get))
-        # f = open("data.out", "w+")
-        # for a in humi_chart:
-        # # a = "data[\"" + str(k) + "\"] = " + str(k) + '\n'
-        #     f.write(a)
-        content = {'humi_chart' : humi_chart, 'temp_chart' : temp_chart, 'data_label' : data_label, 'macsensor': mac_sensor}
-        return render(request, 'sensor_chart.html', content)
-    except Exception as e:
-        print(e)
-        raise Http404
+
+
 def RiskChart(request, proposalID):
     try:
         rwAssessment = models.RwAssessment.objects.get(id= proposalID)
@@ -4011,7 +3998,6 @@ def Inputdata(request, proposalID):
                                                                            'componentID': rwassessment.componentid_id,
                                                                            'equipmentID': rwassessment.equipmentid_id})
 
-
 def mosquitto_mqtt_pub(request):
     client = mqtt.Client()
     client.connect(CLOUD_URL, PORT, 60)
@@ -4073,11 +4059,151 @@ def getHumi(request, sensorId):
             'data':DATA[0:8]
         })
 
-def get_json_file_tem(request):
+def get_json_tem(request):
+    loc = 0
+    sensorID = 0
+    if request.method == "GET":
+        loc = request.GET.get("loc")
+        sensorID = request.GET.get("sensorID")
+    print(sensorID)
     f = open('./json/temperature.json', mode='r')
     data = json.load(f)
     json_data = json.dumps(data)
     # print(data["label"])
+    data_sensor = {}
+    for sensor in data:
+        if sensor["label"] == int(sensorID):
+            data_sensor = sensor
+            print(data_sensor)
+            break;
     f.close()
+    print(data_sensor['data'][int(loc):])
+    sensor = json.dumps(data_sensor["data"][int(loc):])
+    return HttpResponse(sensor, content_type='application/json')
 
-    return render(request, 'chart/data_chart.html', {'json_data':json_data})
+def get_tem(request):
+    loc = 0
+    sensorID = 0
+    arr = {"data":[]}
+    a = []
+    if request.method == "GET":
+        loc = request.GET.get("loc")
+        sensorID = request.GET.get("sensorID")
+    sensors = models.DataSensor.objects.filter(mac_sensor=sensorID)
+    for sensor in sensors:
+        t = sensor.time_get
+        a = [int(t.year), int(t.month), int(t.day), int(t.hour), int(t.minute), float(sensor.temp)]
+        arr["data"].append(a)
+    
+    return HttpResponse(json.dumps(arr["data"][int(loc):]), content_type='application/json')
+def show_chart_sensor(request, sensorID):
+    content = {'sensorID': sensorID};
+    return render(request, 'chart/data_chart.html', content)
+
+def data_sensor_chart(request, mac_sensor):
+    try:
+        data_sensor = models.DataSensor.objects.filter(mac_sensor=mac_sensor)
+        print(mac_sensor)
+        # print('mac_sensor: ' + data_sensor[0].mac_sensor + '\n')
+        humi_chart = []
+        temp_chart = []
+        data_label = []
+        for obj in data_sensor:
+            humi_chart.append(obj.humi)
+            print(obj.humi)
+            temp_chart.append(obj.temp)
+            data_label.append(date2Str.date2str(obj.time_get))
+        # f = open("data.out", "w+")
+        # for a in humi_chart:
+        # # a = "data[\"" + str(k) + "\"] = " + str(k) + '\n'
+        #     f.write(a)
+        content = {'humi_chart' : humi_chart, 'temp_chart' : temp_chart, 'data_label' : data_label, 'macsensor': mac_sensor}
+        return render(request, 'sensor_chart.html', content)
+    except Exception as e:
+        print(e)
+        raise Http404
+
+def new_gateway(request, facilityID):
+    try:
+        data = {}
+        error = {}
+        faci = models.Facility.objects.get(facilityid= facilityID)
+        if request.method == 'POST':
+            data['gw_name'] = request.POST.get('gw_name')
+            data['registrationdate'] = request.POST.get('registrationdate')
+            data['description'] = request.POST.get('description')
+            count = models.Devices.objects.filter(device_id= data['device_id']).count()
+            if count > 0:
+                error['exist']='This equipment already exist!'
+            else:
+                dv = models.Devices(device_name= data['gw_name'],
+                                    siteid_id= faci.siteid_id, facilityid_id= facilityID, 
+                                    registration_date= data['registrationdate'],
+                                    device_desc= data['description'])
+                dv.save()
+                return redirect('gatewayDisplay', facilityID= facilityID)
+    except:
+        raise Http404
+    return render(request, 'FacilityUI/equipment/gatewayNew.html', {'data':data, 'facilityID':facilityID, 'siteID':faci.siteid_id})
+
+
+def ListGateway(request, facilityID):
+    try:
+        faci = models.Facility.objects.get(facilityid= facilityID)
+        # data = models.Devices.objects.filter(facility_id= facilityID)
+        # print(data)
+        # pagiGw = Paginator(data,25)
+        # pageGw = request.GET.get('page',1)
+        data1 = models.Devices.objects.filter(facility_id= facilityID)
+        pagiGw = Paginator(data1,25)
+        pageGw = request.GET.get('page',1)
+        try:
+            obj = pagiGw.page(pageGw)
+            print('ok')
+            # obj1 = pagiGw.page(pageGw)
+        except PageNotAnInteger:
+            obj = pagiGw.page(1)
+            print('1')
+            # obj1 = pagiGw.page(1)
+        except EmptyPage:
+            obj = pageGw.page(pagiGw.num_pages)
+            print('2')
+            # obj1 = pageGw.page(pagiGw.num_pages)   
+        if '_edit' in request.POST:
+            for a in data:
+                if request.POST.get('%d' %a.gatewayID):
+                    return redirect('gatewayEdit', equipmentID= a.device_id)
+        if '_delete' in request.POST:
+            for a in data:
+                if request.POST.get('%d' %a.equipmentid):
+                    a.delete()
+            return redirect('gatewayDisplay' , facilityID= facilityID)
+    except:
+        raise Http404
+    return render(request, 'FacilityUI/equipment/gatewayListDisplay.html', {'obj':obj, 'facilityID':facilityID, 'siteID':faci.siteid_id})
+
+def ListSensor(request, gatewayID):
+    try:
+        gw = models.Devices.objects.get(device_id= gatewayID)
+        facility_id = gw.facility_id
+        data = models.Sensors.objects.filter(device_id= gatewayID)
+        pagiSensor = Paginator(data,25)
+        pageSensor = request.GET.get('page',1)
+        try:
+            obj = pagiSensor.page(pageSensor)
+        except PageNotAnInteger:
+            obj = pagiSensor.page(1)
+        except EmptyPage:
+            obj = pageSensor.page(pagiSensor.num_pages)
+        # if '_edit' in request.POST:
+        #     for a in data:
+        #         if request.POST.get('%a' %a.id):
+        #             return redirect('componentEdit', componentID= a.id)
+        # if '_delete' in request.POST:
+        #     for a in data:
+        #         if request.POST.get('%d' %a.id):
+        #             a.delete()
+        #     return  redirect('sensorDisplay', equipmentID=gatewayID)
+    except:
+        raise Http404
+    return render(request, 'FacilityUI/component/sensorListDisplay.html', {'obj':obj, 'gatewayID':gatewayID, 'facilityID':facility_id})

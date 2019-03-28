@@ -174,7 +174,7 @@ def main():
         DeltaFATT=0.5, minOT=20, CO3=0, PresenceCyanides=False, Op7=100, APIFluid="C1-C2", NumberPipeFittings="More than 10", 
         InternalCladding=True, DFDI=False, ExternalCoatingQuality="Please select coat quality..", HydrogenFluoric=False, 
         ToxicConstituents=True, H2SInWater=1000, NickelAlloy=False, Downtime=False, 
-        OnlineMonitoring="Sour water low velocity corrosion - Electrical resistance probes", InsulationType='C', 
+        OnlineMonitoring="aking", InsulationType='C', 
         MinReqThickness=16.68, SusceptibleTemper=False, AusteniticSteel=False, PreviousFailures="Greater than one", 
         allowStress=240, BranchDiameter="Any branch less than or equal to 2\" Nominal OD", MaxBrinell="Below 200", 
         CylicOper=True, PHWater=5, ExposedSulfur=False, AdminControlUpset=True, CladdingCorrosionRate=0.29, 
@@ -194,7 +194,7 @@ def main():
         CurrentCorrosionRate=0.29, InsulationCondition="Above average", CarbonAlloySteel=False, InterfaceSoilWater=False, 
         ToxicPercent=0, TrampElements=False, DesignPressure=12000, SulfurContent=0)
     send_data = json.dumps(data)
-    client.publish("7/propsaltest", send_data);
+    client.publish("topic1", send_data);
     client.disconnect();
 
 

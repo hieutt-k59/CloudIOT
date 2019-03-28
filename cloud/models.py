@@ -129,16 +129,6 @@ class ComponentType(models.Model):
         db_table = 'component_type'
         ordering = ('componenttypeid',)
 
-class DataSensor(models.Model):
-    data_id = models.AutoField(db_column='id', primary_key=True)
-    humi = models.FloatField(db_column='humidity')
-    temp = models.FloatField(db_column='temperature')
-    time_get = models.DateTimeField(db_column='time_get', default=datetime.datetime.now())
-    mac_sensor = models.IntegerField(db_column='mac_sensor')
-
-    class Meta:
-        managed = False
-        db_table = 'data_sensor'
 
 class DesignCode(models.Model):
     designcodeid = models.AutoField(db_column='DesignCodeID', primary_key=True)  # Field name made lowercase.
@@ -1112,3 +1102,38 @@ class Emailto(models.Model):
     class Meta:
         managed = False
         db_table = 'zm_people_to'
+
+
+class Devices(models.Model):
+    device_id = models.AutoField(db_column='device_id', primary_key=True)
+    device_unique_id = models.TextField(db_column='device_unique_id')
+    device_name = models.CharField(db_column='device_name', max_length=255, default='my_device')
+    device_desc = models.TextField(db_column='device_description')
+    registration_date = models.DateTimeField(db_column='registration_date', default=datetime.datetime.now())
+    facility_id = models.ForeignKey(Facility, on_delete=models.CASCADE, db_column='facility_id')
+
+    class Meta:
+        managed = False
+        db_table = 'devices'
+
+
+class Sensors(models.Model):
+    id = models.AutoField(db_column='id', primary_key=True)
+    sensor_name = models.TextField(db_column='sensor_name', default='my_sensor')
+    device_id = models.ForeignKey(Devices, on_delete=models.CASCADE, db_column='device_id')
+    class Meta:
+        managed = False
+        db_table = 'sensors'
+
+
+class DataSensor(models.Model):
+    data_id = models.AutoField(db_column='id', primary_key=True)
+    humi = models.FloatField(db_column='humidity')
+    temp = models.FloatField(db_column='temperature')
+    time_get = models.DateTimeField(db_column='time_get', default=datetime.datetime.now())
+    mac_sensor = models.ForeignKey(Sensors, on_delete=models.CASCADE, db_column='mac_sensor')
+
+    class Meta:
+        managed = False
+        db_table = 'data_sensors'
+        ordering = ('-data_id',)

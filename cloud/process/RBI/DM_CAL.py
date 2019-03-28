@@ -13,7 +13,7 @@ from cloud.process.RBI import Postgresql as DAL_CAL
 # nhung gia tri Num_inspec, EFF khong can truyen khi su dung ham
 class DM_CAL:
     # ham khoi tao
-    def __init__(self,ComponentNumber = "",Commissiondate = datetime.now(), AssessmentDate = datetime.now(), APIComponentType="",
+    def __init__(self, ComponentNumber = "", Commissiondate = datetime.now(), AssessmentDate = datetime.now(), APIComponentType="",
                  Diametter=0, NomalThick=0, CurrentThick=0, MinThickReq=0, CorrosionRate=0, CA=0,
                  ProtectedBarrier=False, CladdingCorrosionRate=0, InternalCladding=False, NoINSP_THINNING=0,
                  EFF_THIN="E", OnlineMonitoring="", HighlyEffectDeadleg=False, ContainsDeadlegs=False,

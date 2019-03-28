@@ -12,31 +12,31 @@
     <form method="post">
     {% csrf_token %}
         <div style="text-align: center">
-            <caption><b style="font-size: 22px;color: #444444">List of Equipments</b></caption>
+            <caption><b style="font-size: 22px;color: #444444">List of Gateways</b></caption>
             <br><br>
             <table class="table" id="mytable">
                 <thead>
                     <tr>
                         <th width="100px" style="text-align: center"><input type="checkbox" id="chkHeader"></th>
-                        <th width="200px" style="text-align: center"><i class="fa fa-fax"></i>&ensp;Equipment Number</th>
-                        <th width="200px" style="text-align: center"><i class="fa fa-tag"></i>&ensp;Equipment Name</th>
-                        <th width="200px" style="text-align: center"><i class="fa fa-bar-chart-o"></i>&ensp;Risk Summary</th>
+                        <th width="200px" style="text-align: center"><i class="fa fa-fax"></i>&ensp;Gateway ID</th>
+                        <th width="200px" style="text-align: center"><i class="fa fa-tag"></i>&ensp;Gateway Name</th>
+                        <th width="200px" style="text-align: center"><i class="fa fa-bar-chart-o"></i>&ensp;Description</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for a in obj %}
                     <tr>
-                        <td style="text-align: center"><input type="checkbox" name="{{ a.equipmentid }}"></td>
-                        <td style="text-align: center"><a href="{% url 'componentDisplay' a.equipmentid %}">{{ a.equipmentnumber }}</a></td>
-                        <td style="text-align: center">{{ a.equipmentname }}</td>
-                        <td align="center"><a href="{% url 'exportData' a.equipmentid 'Equipment' %}"><i class="fa fa-print" ></i></a></td>
+                        <td style="text-align: center"><input type="checkbox" name="{{ a.device_id }}"></td>
+                        <td style="text-align: center"><a href="{% url 'sensorDisplay' a.device_id %}">{{ a.device_id }}</a></td>
+                        <td style="text-align: center">{{ a.device_name }}</td>
+                        <td align="center">{{a.device_desc}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
 
               {#          Pagination div  #}
-            <div>
+            <!-- <div>
                 {% if obj.has_other_pages %}
               <ul class="pagination">
                 {% if obj.has_previous %}
@@ -81,7 +81,7 @@
               {% endif %}
             </ul>
           {% endif %}
-          </div>
+          </div> -->
 
 
 {#            tool div #}
